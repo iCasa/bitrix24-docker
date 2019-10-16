@@ -51,9 +51,9 @@ return array (
       array (
         'className' => '\\Bitrix\\Main\\DB\\MysqliConnection',
         'host' => 'mysql',
-        'database' => 'sitemanager',
-        'login'    => 'bitrix',
-        'password' => '+Tr+()8]!szl[HQIsoT5',
+        'database' => getenv('MYSQL_DATABASE') ?: 'sitemanager',
+        'login'    => getenv('MYSQL_USER')     ?: 'bitrix',
+        'password' => getenv('MYSQL_PASSWORD') ?: '+Tr+()8]!szl[HQIsoT5',
         'options' => 2,
       ),
     ),

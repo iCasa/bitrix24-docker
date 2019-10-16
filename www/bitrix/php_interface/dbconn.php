@@ -1,11 +1,11 @@
 <?
 define("DBPersistent", false);
-$DBType = "mysql";
-$DBHost = "mysql";
-$DBLogin = 'bitrix';
-$DBPassword = '+Tr+()8]!szl[HQIsoT5';
-$DBName = "sitemanager";
-$DBDebug = false;
+$DBType        = "mysql";
+$DBHost        = "mysql";
+$DBLogin       = getenv('MYSQL_USER')	  ?: 'bitrix';
+$DBPassword    = getenv('MYSQL_PASSWORD') ?: '+Tr+()8]!szl[HQIsoT5';
+$DBName        = getenv('MYSQL_DATABASE') ?: "sitemanager";
+$DBDebug       = false;
 $DBDebugToFile = false;
 
 define("DELAY_DB_CONNECT", true);

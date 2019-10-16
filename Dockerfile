@@ -116,6 +116,7 @@ COPY ./usr /usr
 WORKDIR /home/bitrix/www
 
 COPY ./www /home/bitrix/www
+COPY ./www/bitrix /usr/share/bitrix
 
 # Get the latest version of bitrix scripts
 ADD https://www.1c-bitrix.ru/download/files/scripts/bitrixsetup.php /home/bitrix/www/
@@ -135,4 +136,6 @@ RUN systemctl enable named.service && \
     systemctl enable httpd.service && \
     systemctl enable crond.service
 
-CMD ["/usr/sbin/init"]
+ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
+
+# CMD ["/usr/sbin/init"]
