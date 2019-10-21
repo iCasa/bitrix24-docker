@@ -101,40 +101,41 @@ RUN yum install -y php \
     && mkdir /var/log/nginx \
     && mkdir /home/bitrix/www \
     && yum clean -y all \
-    && rm -rf -- /var/cache/yum/*
-
+    && rm -rf -- /var/cache/yum/* \
+    && chmod -R 777 /tmp
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer && \
     composer clear-cache
 
-
 # Nginx default server and PHP defaults
 COPY ./etc /etc
 COPY ./usr /usr
 
-WORKDIR /home/bitrix/www
-
-COPY ./www /home/bitrix/www
-COPY ./www/bitrix /usr/share/bitrix
+# A copy of bitrix setup scripts and initial settings
+COPY ./www /usr/share/bitrix
 
 # Get the latest version of bitrix scripts
-ADD https://www.1c-bitrix.ru/download/files/scripts/bitrixsetup.php /home/bitrix/www/
-ADD https://www.1c-bitrix.ru/download/files/scripts/restore.php /home/bitrix/www/
+ADD https://www.1c-bitrix.ru/download/files/scripts/bitrixsetup.php /usr/share/bitrix
+ADD https://www.1c-bitrix.ru/download/files/scripts/restore.php /usr/share/bitrix
 
-RUN chown -R bitrix:bitrix /home/bitrix /usr/share/bitrix
-RUN chmod -R 777 /tmp && \
+# Prepare the working folder with the bitrix install script in the image
+RUN cp -a /usr/share/bitrix/. /home/bitrix/www/ && \
+    chown -R bitrix:bitrix /home/bitrix /usr/share/bitrix && \
     mkdir -p -m 777 /home/bitrix/www/bitrix/tmp && \
     chmod -R 777 /home/bitrix/www/bitrix/tmp
-
-EXPOSE 80
-EXPOSE 443
 
 # named (dns server) service
 RUN systemctl enable named.service && \
     systemctl enable nginx.service && \
     systemctl enable httpd.service && \
     systemctl enable crond.service
+
+# VOLUME /home/bitrix/www/
+WORKDIR /home/bitrix/www
+
+EXPOSE 80
+EXPOSE 443
 
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
